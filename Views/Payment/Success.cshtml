@@ -1,0 +1,122 @@
+﻿@using BookStoreApp.Data
+@using Microsoft.EntityFrameworkCore
+@model BookStoreApp.Models.Order
+
+@{
+    ViewData["Title"] = "Payment Successful";
+}
+
+<h2 class="page-title">Payment Successful</h2>
+<p class="thank-you-message">Thank you for your purchase! Your order number is <strong>@Model.Id</strong>.</p>
+
+<h3 class="order-details-title">Order Details:</h3>
+<ul class="order-items-list">
+    @if (Model.OrderItems != null && Model.OrderItems.Any())
+    {
+        foreach (var item in Model.OrderItems)
+        {
+            <li class="order-item">
+                <span class="book-title">$@item.BookId ?? "Unknown Book"</span> -
+                <span class="book-price">$@item.Price</span> (Quantity: <span class="book-quantity">@item.Quantity</span>)
+            </li>
+        }
+    }
+    else
+    {
+        <li>No items found in this order.</li>
+    }
+</ul>
+
+<p class="total-price"><strong>Total:</strong> $@Model.OrderItems.Sum(i => i.Price * i.Quantity)</p>
+
+@section Scripts {
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            color: #333;
+            font-size: 2rem;
+            margin-top: 30px;
+        }
+
+        /* Thank You Message */
+        .thank-you-message {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            color: #555;
+        }
+
+        /* Order Details Title */
+        .order-details-title {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #007bff;
+            margin-top: 20px;
+        }
+
+        /* Order Items List */
+        .order-items-list {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .order-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Book Title */
+        .book-title {
+            font-weight: bold;
+        }
+
+        /* Book Price and Quantity */
+        .book-price,
+        .book-quantity {
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        /* Total Price */
+        .total-price {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .order-items-list {
+                font-size: 0.9rem;
+            }
+
+            .book-price,
+            .book-quantity {
+                font-size: 0.9rem;
+            }
+
+            .total-price {
+                font-size: 1rem;
+            }
+        }
+    </style>
+}

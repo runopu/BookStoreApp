@@ -1,0 +1,21 @@
+﻿@model BookStoreApp.Models.Book
+
+@{
+    ViewData["Title"] = "Delete Book";
+}
+
+<h2>Delete Book</h2>
+
+<p>Are you sure you want to delete the following book?</p>
+
+<ul>
+    <li><strong>Title:</strong> @Model.Title</li>
+    <li><strong>Author:</strong> @Model.Author</li>
+    <li><strong>Price:</strong> $@Model.Price</li>
+</ul>
+
+<form asp-action="DeleteBook" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit">Yes, Delete</button>
+    <a href="@Url.Action("ManageBooks", "Admin")">Cancel</a>
+</form>

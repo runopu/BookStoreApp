@@ -1,0 +1,92 @@
+﻿@model IEnumerable<BookStoreApp.Models.Book>
+
+@{
+    ViewData["Title"] = "Browse Books";
+
+    var searchQuery = ViewData["SearchQuery"] as string;
+}
+
+<section class="book-listings">
+    <h3>Popular Books</h3>
+    <div class="book-grid">
+        @if (Model != null && Model.Any())
+
+        {
+            @foreach (var book in Model)
+
+            {
+                <div class="book-card">
+                    <img src="@book.CoverImageUrl" alt="@book.Title" />
+                    <h4>@book.Title</h4>
+                    <p>Author: @book.Author</p>
+                    <p>Price: $@book.Price</p>
+                    <button onclick="location.href='@Url.Action("BookDetails", "Home", new { id = book.Id })'">View Details</button>
+                    <button onclick="location.href='@Url.Action("AddToCart", "Cart", new { id = book.Id })'">Add to Cart</button>
+                </div>
+            }
+        }
+
+        else
+
+        {
+            <p>No books found for your search query.</p>
+        }
+    </div>
+</section>
+
+<style>
+    .book-listings {
+        padding: 20px;
+    }
+
+    .book-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr); /* Six columns */
+        gap: 20px; /* Space between the book cards */
+        margin-top: 20px;
+    }
+
+    .book-card {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+    }
+
+        .book-card:hover {
+            transform: scale(1.05);
+        }
+
+        .book-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .book-card h4 {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .book-card p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .book-card button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+            .book-card button:hover {
+                background-color: #0056b3;
+            }
+</style>

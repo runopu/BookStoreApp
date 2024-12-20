@@ -1,0 +1,156 @@
+﻿@model IEnumerable<BookStoreApp.Models.Order>
+
+@{
+    ViewData["Title"] = "Manage Orders";
+}
+
+<h2>Manage Orders</h2>
+
+@if (TempData["AlertMessage"] != null)
+{
+    <script type="text/javascript">
+        alert('@TempData["AlertMessage"]');
+    </script>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>User Email</th>
+            <th>Order Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.UserEmail</td>
+                <td>@order.OrderDate.ToString("MM/dd/yyyy")</td>
+                <td>@order.Status</td>
+                <td>
+                    @if (order.Status != "Complete" && order.Status != "Cancelled")
+                    {
+                        <a href="@Url.Action("UpdateOrderStatus", "Admin", new { id = order.Id, status = "Complete" })" class="status-button complete-button">Mark as Complete</a>
+                        <a href="@Url.Action("UpdateOrderStatus", "Admin", new { id = order.Id, status = "Cancelled" })" class="status-button cancel-button">Cancel</a>
+                    }
+                    else
+                    {
+                        <span>N/A</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header and Title */
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 2rem;
+            margin-top: 30px;
+        }
+
+        /* Table Styles */
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Table Header */
+        thead {
+            background-color: #007bff;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        /* Action Links */
+        a {
+            color: #007bff;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+            a:hover {
+                color: #0056b3;
+                text-decoration: underline;
+            }
+
+            a:active {
+                color: #004085;
+            }
+
+        /* Status Label Styling */
+        td:last-child {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-button {
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: white;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .complete-button {
+            background-color: #28a745;
+        }
+
+            .complete-button:hover {
+                background-color: #218838;
+            }
+
+        .cancel-button {
+            background-color: #dc3545;
+        }
+
+            .cancel-button:hover {
+                background-color: #c82333;
+            }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            table {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+
+    </style>
+}

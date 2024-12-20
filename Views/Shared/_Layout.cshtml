@@ -1,0 +1,73 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Book Nook</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <!-- Navbar Section -->
+    <header class="navbar">
+        <div class="navbar-left">
+            <a href="/" class="logo">Book Nook</a>
+            <nav class="nav-links">
+                <a href="/">Home</a>
+                <a href="#">Categories</a>
+                <a href="#">Best Sellers</a>
+                <a href="#">New Arrivals</a>
+            </nav>
+        </div>
+        <div class="navbar-right">
+            <div class="search-bar">
+                <form method="get" action="/">
+                    <input type="text" name="searchQuery" placeholder="Search by title, author, or description..." value="@ViewData["SearchQuery"]" />
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+
+            @if (HttpContextAccessor.HttpContext.Session.GetString("UserEmail") != null)
+            {
+                var userRole = HttpContextAccessor.HttpContext.Session.GetString("UserRole");
+                if (userRole == "Admin")
+                {
+                    <!-- Show Admin Links -->
+                    <div class="auth-links">
+                        <a href="/Admin/ManageBooks">Manage Books</a>
+                        <a href="/Admin/ManageOrders">Manage Orders</a>
+                        <a href="/Account/Logout">Sign Out</a>
+                    </div>
+                }
+                else
+                {
+                    <!-- Show Cart and Sign Out for Logged-In Users -->
+                    <div class="auth-links">
+                        <a href="/Cart/Index">Cart</a>
+                        <a href="/Account/Logout">Sign Out</a>
+                    </div>
+                }
+            }
+            else
+            {
+                <!-- Show Login and Sign Up for Guests -->
+                <div class="auth-links">
+                    <a href="/Account/Login">Login</a>
+                    <a href="/Account/Signup">Sign Up</a>
+                </div>
+            }
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        @RenderBody()
+    </div>
+    @RenderSection("Scripts", required: false)
+    <!-- Footer Section -->
+    <footer class="footer">
+        <p>&copy; @DateTime.Now.Year - Book Nook | <a href="#">About Us</a> | <a href="#">Contact</a> | <a href="#">Privacy Policy</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,18 @@
+@model BookStoreApp.Models.Book
+
+@{
+    ViewData["Title"] = @Model.Title;
+}
+
+<div class="book-details-container">
+    <div class="book-details">
+        <img src="@Model.CoverImageUrl" alt="@Model.Title" />
+        <div class="book-info">
+            <h2>@Model.Title</h2>
+            <p><strong>Author:</strong> @Model.Author</p>
+            <p><strong>Price:</strong> $@Model.Price</p>
+            <p><strong>Description:</strong> @Model.Description</p>
+            <button onclick="location.href='@Url.Action("AddToCart", "Cart", new { id = Model.Id })'">Add to Cart</button>
+        </div>
+    </div>
+</div>

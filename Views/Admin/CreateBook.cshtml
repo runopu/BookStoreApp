@@ -1,0 +1,26 @@
+﻿@model BookStoreApp.Models.Book
+
+@{
+    ViewData["Title"] = "Add New Book";
+}
+
+<h2>Add New Book</h2>
+
+<form asp-action="CreateBook" method="post">
+    <label for="Title">Title</label>
+    <input asp-for="Title" />
+
+    <label for="Author">Author</label>
+    <input asp-for="Author" />
+
+    <label for="Price">Price</label>
+    <input asp-for="Price" type="number" step="0.01" />
+
+    <label for="CoverImageUrl">Cover Image URL</label>
+    <input asp-for="CoverImageUrl" />
+
+    <label for="Description">Description</label>
+    <textarea asp-for="Description"></textarea>
+
+    <button type="submit">Add Book</button>
+</form>

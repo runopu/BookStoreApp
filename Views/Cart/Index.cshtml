@@ -1,0 +1,198 @@
+@model List<BookStoreApp.Models.Book>
+
+@{
+    ViewData["Title"] = "Your Cart";
+    decimal total = Model.Sum(b => b.Price);
+}
+
+@using BookStoreApp.Models
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@{
+    // Generate and store the anti-forgery tokens
+    var tokens = Antiforgery.GetAndStoreTokens(Context);
+}
+
+<h2>Your Cart</h2>
+
+@if (Model.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>$@book.Price</td>
+                    <td>
+                        <a href="@Url.Action("RemoveFromCart", "Cart", new { id = book.Id })">Remove</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Total: $@total</h3>
+
+    <!-- Checkout Button -->
+    @* <button onclick="location.href='@Url.Action("Checkout", "Cart")'">Checkout</button> *@
+    <button id="checkout-button">Pay Now</button>
+
+}
+else
+{
+    <p>Your cart is empty.</p>
+}
+
+@section Scripts {
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        var stripe = Stripe('@Configuration["Stripe:PublishableKey"]');
+        var antiForgeryToken = '@tokens.RequestToken';
+
+        var checkoutButton = document.getElementById('checkout-button');
+        checkoutButton.addEventListener('click', function () {
+            fetch('/Payment/CreateCheckoutSession', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': antiForgeryToken
+                }
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (session) {
+                    return stripe.redirectToCheckout({ sessionId: session.id });
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header and Page Title */
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 2rem;
+            margin-top: 30px;
+        }
+
+        /* Table Styles */
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        thead {
+            background-color: #007bff;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        /* Total Section */
+        h3 {
+            text-align: center;
+            color: #333;
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+
+        /* Button Styles */
+        button {
+            background-color: #28a745; /* Green background for buttons */
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin: 20px auto;
+            display: block;
+            width: 200px;
+        }
+
+            button:hover {
+                background-color: #218838;
+                transform: scale(1.05);
+            }
+
+            button:active {
+                background-color: #1e7e34;
+                transform: scale(0.98);
+            }
+
+        /* Remove Button Styles */
+        a {
+            color: #dc3545;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+            a:active {
+                color: #bd2130;
+            }
+
+        /* Empty Cart Message */
+        p {
+            text-align: center;
+            color: #555;
+            font-size: 1.2rem;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            table {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+    </style>
+}
